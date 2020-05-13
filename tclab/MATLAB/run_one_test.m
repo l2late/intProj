@@ -1,4 +1,4 @@
-function run_one_test(Q1,Q2,FileName)
+function run_one_test(Arduino,Q1,Q2,FileName)
 % Peform test with tclab and save results to filename
 % Inputs:   Q1 - Percent Heater 1 (0-100%)
 %           Q2 - Percent Heater 2 (0-100%)
@@ -19,8 +19,10 @@ if isfile(strcat(FileName,'.mat'))
   return
 end
 
-% include tclab
-tclab
+a = Arduino;
+
+% include tclab functions
+tclab_functions
 
 % set start time
 start_time = clock;
@@ -65,20 +67,20 @@ for ii = 1:loops
         %Display temperature reading
         fprintf('Time:\t%d\tTime left:\t%d\n',round(time(ii)),loops-ii);
         fprintf('Q:\t%4.2f\t%4.2f\n',Q1(ii),Q2(ii));
-        fprintf('Temp:\t%4.2f\t%4.2f\n',T1(ii),T2(ii));
+        fprintf('Temp:\t%4.2f\t%4.2f\n\n',T1(ii),T2(ii));
     catch
         % turn off heaters
         h1(0);
         h2(0);
         disp('Heaters off')
         % turn off heater but keep LED on if T > 50
-        if (T1C() || T2C()) > 50
+        if (T1C() > 50) || (T2C() > 50)
             led(1)
             disp(['Warning, heater temperature 1 =', num2str(T1C())])
             disp(['Warning, heater temperature 2 =', num2str(T2C())])
         else
             % the line below gives an error for no apparent reason
-            %led(0)
+            led(0)
         end
         
         % save txt file with data
