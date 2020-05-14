@@ -28,7 +28,7 @@ tclab_functions
 start_time = clock;
 prev_time = start_time;
 
-% Itialize Time and Measurements
+% Intialize Time and Measurements
 loops = size(Q1,1);
 time = zeros(1,loops);
 T1 = ones(1,loops) * T1C();     % measured T (sensor 1)
@@ -64,6 +64,7 @@ for ii = 1:loops
         % read and record from temperature controller
         T1(ii) = T1C();
         T2(ii) = T2C();
+        
         %Display temperature reading
         fprintf('Time:\t%d\tTime left:\t%d\n',round(time(ii)),loops-ii);
         fprintf('Q:\t%4.2f\t%4.2f\n',Q1(ii),Q2(ii));

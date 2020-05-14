@@ -22,4 +22,4 @@ led = @(level) writePWMDutyCycle(a,'D9',max(0,min(1,level)));  % ON
 % limit to 0-0.9 (0-100%)
 h1 = @(level) writePWMDutyCycle(a,'D3',max(0,min(100,level))*0.9/100);
 % limit to 0-0.5 (0-100%)
-h2 = @(level) writePWMDutyCycle(a,'D5',max(0,min(100,level))*0.5/100);
+h2 = @(level) writePWMDutyCycle(a,'D5',max(0,min(100,level))*0.9/100);

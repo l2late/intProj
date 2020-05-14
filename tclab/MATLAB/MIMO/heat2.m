@@ -1,4 +1,4 @@
-% save as heat2.m
+% Source: https://apmonitor.com/pdc/index.php/Main/ArduinoModeling2
 % define energy balance model
 function dTdt = heat2(t,x,Q1,Q2)
     % Parameters
