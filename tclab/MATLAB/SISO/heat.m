@@ -1,7 +1,7 @@
 % source: https://apmonitor.com/pdc/index.php/Main/ArduinoModeling
 % save as heat.m
 % define energy balance model
-function dTdt = heat(time,x,Q)
+function dTdt = heat(t,x,Q)
     % Parameters
     Ta = 23 + 273.15;   % K
     U = 10.0;           % W/m^2-K
