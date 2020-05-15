@@ -10,7 +10,7 @@ global t T1meas T2meas Q1 Q2
 % Column 1 = time (t)
 % Column 2 = input (u)
 % Column 3 = output (yp)
-filename = 'data.txt';
+filename = 'Results\semi_random_test_Halithan.txt';
 delimiterIn = ',';
 headerlinesIn = 1;
 z = importdata(filename,delimiterIn,headerlinesIn);
@@ -25,9 +25,9 @@ T2meas = z.data(:,5);
 ns = length(t);
 
 % Parameter initial guess
-U = 10.0;           % Heat transfer coefficient (W/m^2-K)
-alpha1 = 0.0100;    % Heat gain 1 (W/%)
-alpha2 = 0.0075;    % Heat gain 2 (W/%)
+U = 2.25;           % Heat transfer coefficient (W/m^2-K)
+alpha1 = 0.006;    % Heat gain 1 (W/%)
+alpha2 = 0.01;    % Heat gain 2 (W/%)
 p0 = [U,alpha1,alpha2];
 
 % show initial objective

@@ -1,0 +1,78 @@
+% For Parameter initial guess
+U = 10.0;           % Heat transfer coefficient (W/m^2-K)
+alpha1 = 0.0100;    % Heat gain 1 (W/%)
+alpha2 = 0.0075;    % Heat gain 2 (W/%)'
+>>
+>> The optimized values became
+alpha1	 	0.007896135956495;
+alpha2	 	0.008671397128279;
+U		2.249791367622769;
+
+% set heating values for heater 1
+% column 1 and 2: interval begin and end as fraction of total time
+% column 3: heater setting for the corresponding interval
+set_h1 =    [.1     .2      90;
+             .2     .5      30;
+             .5     .8      100;
+             .8     1       10];
+
+% adjust level for heater 1
+for ii = 1:size(set_h1,1)
+    Q1(floor(set_h1(ii,1)*loops):ceil(set_h1(ii,2)*loops),1) = set_h1(ii,3);
+end
+
+
+    
+% set heating values for heater 2
+% column 1 and 2: interval begin and end as fraction of total time
+% column 3: heater setting for the corresponding interval
+set_h2 =    [.01    .1      40;
+             .1     .3      10;
+             .3     .6      60;
+             .6     .7      50;
+             .7      1      100];
+
+
+% For Parameter initial guess
+U = 0.2;           % Heat transfer coefficient (W/m^2-K)
+alpha1 = 1.5100;    % Heat gain 1 (W/%)
+alpha2 = 2.0075;    % Heat gain 2 (W/%)
+>>
+>> The optimized values became
+alpha1 		0.008671372869872,
+alpha2 		0.007896116940723, 
+U		2.249761928163640
+
+
+
+
+% Parameter initial guess
+U = 2.00;           % Heat transfer coefficient (W/m^2-K)
+alpha1 = 0.01;    % Heat gain 1 (W/%)
+alpha2 = 0.001;    % Heat gain 2 (W/%)
+>>
+alpha1 		0.008671402054796, 
+alpha2 		0.007896143534313, 
+U		2.249799628499901
+
+
+
+% Parameter initial guess
+U = 2.25;           % Heat transfer coefficient (W/m^2-K)
+alpha1 = 0.006;    % Heat gain 1 (W/%)
+alpha2 = 0.01;    % Heat gain 2 (W/%)
+p0 = [U,alpha1,alpha2];
+>>
+alpha1 		0.008671402054796, 		
+alpha2 		0.007896143534313, 
+U		2.249799628499901
+
+
+
+
+
+
+
+
+
+
