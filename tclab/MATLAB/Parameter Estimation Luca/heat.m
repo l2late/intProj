@@ -6,13 +6,14 @@ function dTdt = heat(t,x,Q1,Q2,p)
     U = p(1);
     alpha1 = p(2);
     alpha2 = p(3);
-
+    As = p(4);
+    
     % Parameters
     Ta = 23 + 273.15;   % K
     m = 4.0/1000.0;     % kg
     Cp = 0.5 * 1000.0;  % J/kg-K    
     A = 10.0 / 100.0^2; % Area in m^2
-    As = 2.0 / 100.0^2; % Area in m^2
+    %As = 2.0 / 100.0^2; % Area in m^2
     eps = 0.9;          % Emissivity
     sigma = 5.67e-8;    % Stefan-Boltzman
 
