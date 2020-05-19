@@ -3,11 +3,13 @@
 
 close all; clear all; clc
 
+n_multistart = 20;
+
 % generate data file from TCLab or get sample data file from:
 % https://apmonitor.com/pdc/index.php/Main/ArduinoEstimation2
 % Import data file
 %load ../results/luca/semi_random_test.mat
-load ../results/halithan/semi_random_test_Halithan.mat
+load ../results/luca/semi_random_test_60min_luca.mat
 
 % Extract data columns
 t = data(:,1);
@@ -23,14 +25,18 @@ ns = length(t);
 U = 10.0;           % Heat transfer coefficient (W/m^2-K)
 alpha1 = 0.0100;    % Heat gain 1 (W/%)
 alpha2 = 0.0075;    % Heat gain 2 (W/%)
-As = 2.0 / 100.0^2; % Area in m^2
+Us = 20.0;          % Heat transfer coefficent
+tau = 10.0;         % Heat conduction time constant
 
-p0 = [U,alpha1,alpha2,As];
+% initial guess vector
+p0 = [U,alpha1,alpha2,Us,tau];
+
+% upper and lower bounds of p
+lb = [1,  0.001, 0.001, 5,  5]; % lower bound
+ub = [20, 0.03,  0.02,  40, 60]; % upper bound
 
 % show initial objective
 disp(['Initial SSE Objective: ' num2str(objective(p0,t,Q1,Q2,T1meas,T2meas))])
-
-% optimize parameters
 
 % no linear constraints
 A = [];
@@ -39,10 +45,7 @@ Aeq = [];
 beq = [];
 nlcon = [];
 
-% optimize with fmincon
-lb = [2, 0.005, 0.002, .1/100.0^2]; % lower bound
-ub = [20, 0.02, 0.015,  4/100.0^2]; % upper bound
-
+% create anonymous function for optimoptions
 obj = @(x)objective(x,t,Q1,Q2,T1meas,T2meas);
 
 % start pool of parallel workers
@@ -53,8 +56,9 @@ opts = optimoptions(@fmincon,'Algorithm','interior-point','Display','iter');
 problem = createOptimProblem('fmincon','objective',...
     obj,'x0',p0,'Aineq',A,'bineq',b,'Aeq',Aeq,'beq',beq,...
     'lb',lb,'ub',ub,'nonlcon',nlcon,'options',opts);
-% run optimization with 50 random starts
-[p,fval] = run(ms,problem,50);
+
+% run optimization with random starts
+[p,fval] = run(ms,problem,n_multistart);
 
 % show final objective
 disp(['Final SSE Objective: ' num2str(fval)])
@@ -63,15 +67,18 @@ disp(['Final SSE Objective: ' num2str(fval)])
 U = p(1);
 alpha1 = p(2);
 alpha2 = p(3);
-As = p(4);
-disp(['U: \t' num2str(U)])
-disp(['alpha1: ' num2str(alpha1)])
-disp(['alpha2: ' num2str(alpha2)])
-disp(['As: ' num2str(As)])
+Us = p(4);
+tau = p(5);
+
+fprintf('U:\t%4.2f\n',U)
+fprintf('alpha1:\t%4.4f\n',alpha1)
+fprintf('alpha2:\t%4.4f\n',alpha2)
+fprintf('Us:\t%4.2f\n',Us)
+fprintf('tau:\t%4.2f\n',tau)
 
 % calculate model with updated parameters
-Ti  = simulate(p0,t,Q1,Q2,T1meas,T2meas);
-Tp  = simulate(p,t,Q1,Q2,T1meas,T2meas);
+Ti  = simulate(p0,t,Q1,Q2,T1meas(1),T2meas(1));
+Tp  = simulate(p,t,Q1,Q2,T1meas(1),T2meas(1));
 
 % Plot results
 figure(1)

@@ -12,7 +12,7 @@ tclab
 % wait for setup to cooldown
 cool_down_check(a,cool_temp);
 
-FileName='semi_random_test_Halithan';
+FileName='semi_random_test_60min_luca';
 
 % get heater settings from file (generated with help_define_heater_input.m)
 load semirandom_heater_input.mat

@@ -1,7 +1,7 @@
 %% helper script for setting and visualizing heater inputs
 clear all; close all; clc
 
-time = 30;              % simulation time in min
+time = 60;              % simulation time in min
 loops = time*60;        % simulation time in seconds
 time = 1:1:loops;
 Q1 = zeros(loops,1);    
@@ -10,10 +10,11 @@ Q2 = zeros(loops,1);
 % set heating values for heater 1
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
-set_h1 =    [.1     .2      90;
-             .2     .5      30;
-             .5     .8      100;
-             .8     1       10];
+set_h1 =    [.001    .2      100;
+             .2     .4      40;
+             .4     .6      100;
+             .6     .8      0;
+             .8     1       90];
 
 % adjust level for heater 1
 for ii = 1:size(set_h1,1)
@@ -23,11 +24,11 @@ end
 % set heating values for heater 2
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
-set_h2 =    [.01    .1      40;
-             .1     .3      10;
-             .3     .6      60;
-             .6     .7      50;
-             .7      1      100];
+set_h2 =    [.001    .2      0;
+             .2     .5      90;
+             .5     .7      30;
+             .7     .85     100;
+             .85     1      50];
 
 % adjust level for heater 2
 for ii = 1:size(set_h2,1)
