@@ -3,7 +3,7 @@
 
 close all; clear all; clc
 
-n_multistart = 20;
+n_multistart = 50;
 
 % generate data file from TCLab or get sample data file from:
 % https://apmonitor.com/pdc/index.php/Main/ArduinoEstimation2
@@ -76,6 +76,11 @@ fprintf('alpha2:\t%4.4f\n',alpha2)
 fprintf('Us:\t%4.2f\n',Us)
 fprintf('tau:\t%4.2f\n',tau)
 
+% save optimized parameters
+FileName = '../model_parameters/model_parameters_luca';
+%FileName = 'model_parameters_halithan';
+save(FileName,'U','Us','alpha1','alpha2','tau','-append');
+
 % calculate model with updated parameters
 Ti  = simulate(p0,t,Q1,Q2,T1meas(1),T2meas(1));
 Tp  = simulate(p,t,Q1,Q2,T1meas(1),T2meas(1));
@@ -107,3 +112,8 @@ ylabel('Heater Output')
 legend('Q_1','Q_2')
 
 xlabel('Time (min)')
+
+% save optimized parameters
+FileName = '../model_parameters/model_parameters_luca';
+%FileName = '../model_parameters/model_parameters_halithan';
+save(FileName,'U','Us','alpha1','alpha2','tau','-append');

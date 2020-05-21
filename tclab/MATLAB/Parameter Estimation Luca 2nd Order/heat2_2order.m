@@ -1,8 +1,5 @@
-% define energy balance model
+% define second order eenergy balance model
 function dTdt = heat2_2order(t,x,Q1,Q2,p)
-    %U      = 10.0;         % W/m^2-K
-    %alpha1 = 0.0100;       % W / % heater 1
-    %alpha2 = 0.0075;       % W / % heater 2
     U       = p(1);
     alpha1  = p(2);
     alpha2  = p(3);
