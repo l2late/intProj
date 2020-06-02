@@ -7,7 +7,7 @@ cool_temp = 28;
 % include tclab for connection to arduino
 tclab
 
-%% Semi Random Test: heater 1 and heater 2 set to varying values
+%% Semi Random Test: heater 1  and heater 2 set to varying values
 
 % wait for setup to cooldown
 cool_down_check(a,cool_temp);
