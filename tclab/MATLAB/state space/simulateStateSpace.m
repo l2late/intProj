@@ -1,11 +1,6 @@
 % Simulate State Space
 clear all; close all; clc;
 
-Tnom = 23 + 273.15; % Nominal temperature in K around which to linearize
-
-% Get state space system
-sys = stateSpaceModel(Tnom);
-
 % load test data
 load ../results/luca/semi_random_test_60min_luca.mat
 
@@ -15,15 +10,22 @@ Q1      = data(:,2);
 Q2      = data(:,3);
 T1meas  = data(:,4);
 T2meas  = data(:,5);
+
+% Nominal temperature in K around which to linearize
+Tnom = mean([T1meas(1),T2meas(1)]) + 273.15;
+
+% Get state space system
+sys = stateSpaceModel(Tnom);
+
 % Initial state
-T0      = [T1meas(1) T2meas(2) T1meas(1) T2meas(2)]'; 
+%Tbar    = ones(4,1)*Tnom;
+T0      = ([T1meas(1) T2meas(1) T1meas(1) T2meas(1)]'); 
 
 % Number of time points
 ns = length(t);
 
 % simulate state space response
 Tp  = lsim(sys,[Q1 Q2],t,T0);
-Tp = Tp + 273.15;
 
 % Plot results
 figure(1)
