@@ -1,40 +1,54 @@
-function[As, Cs, Ks] = SubId(sid, s, n, sing_val_plot)
+function[As, Cs, Ks] = SubId(U, Y, s, n, sing_val_plot)
+% l: # of outputs
+% m: # of inputs
+% n: # of states
+% Y = l*N
+% U = m*N
 
 % Extract data from input
-m = size(sid,1);
-N = size(sid,2);
+m = size(U,1); % input vector size
+N = size(U,2); % sample size
 
-% Initialize Hankel matrices
-S_0sN = zeros(s*m, N - 2*s +1);
-S_ssN = zeros(s*m, N - 2*s +1);
+% Initialize Hankel matrices (past Output and current output)
+Y_0sN = zeros(s*m, N - 2*s +1);
+Y_ssN = zeros(s*m, N - 2*s +1);
+U_0sN = zeros(s*m, N - 2*s +1);
+U_ssN = zeros(s*m, N - 2*s +1);
 
 % Populate Hankel matrices
 for i = 1 : s
     if i == 1
-        S_0sN(1:i*m, :) = sid(:, i:N - 2*s + i);
-        S_ssN(1:i*m, :) = sid(:, s + i:N - s + i);
+        Y_0sN(1:i*m, :) = Y(:, i:N - 2*s + i);
+        Y_ssN(1:i*m, :) = Y(:, s + i:N - s + i);
+        U_0sN(1:i*m, :) = U(:, i:N - 2*s + i);
+        U_ssN(1:i*m, :) = U(:, s + i:N - s + i);
     else
-        S_0sN((i-1)*m +1 :i*m, :) = sid(:, i:N - 2*s + i);
-        S_ssN((i-1)*m +1 :i*m, :) = sid(:, s + i : N - s + i);
+        Y_0sN((i-1)*m +1 :i*m, :) = Y(:, i:N - 2*s + i);
+        Y_ssN((i-1)*m +1 :i*m, :) = Y(:, s + i : N - s + i);
+        U_0sN((i-1)*m +1 :i*m, :) = U(:, i:N - 2*s + i);
+        U_ssN((i-1)*m +1 :i*m, :) = U(:, s + i : N - s + i);
     end
 end
 
 % Define instrumental variable
-Z_N = S_ssN;
+Z_N = [U_0sN;
+       Y_0sN];
+   
+M = [U_ssN ; Z_N; Y_ssN];
 
 % Perform RQ factorization
-r = triu(qr([S_0sN ; Z_N]'))';
+r = triu(qr(M'))';
 
 % Extract R11 and R21
-R11 = r(1:s*m,1:s*m);
-R21 = r(m*s + 1:size(r,1), 1:s*m);
+R22 = r(s*m+1:3*s*m, s*m+1:3*s*m);
+R32 = r(3*m*s + 1:end, s*m+1:3*s*m);
 
-[~,S,V] = svd((R21/R11) * Z_N);
+[~,S,V] = svd((R32/R22) * Z_N);
 
 if sing_val_plot == true 
     figure
     semilogy(diag(S),'xb')
-    title('Magnitude of singular values for $$(R_{21}/R_{11}) * Z_{N}^T$$','Interpreter','Latex','FontSize',22);
+    title('Magnitude of singular values for $$(R_{32}/R_{22}) * Z_{N}^T$$','Interpreter','Latex','FontSize',22);
     ylabel('Magnitude','FontSize',24);
     xlabel('Model order','FontSize',24);
     h = findobj('NameFont','Helvetica');
@@ -47,13 +61,13 @@ Sigma       = S(1:n,1:n);
 X_est_sN    = sqrtm(Sigma) * V1';
 
 % Compute least squares solution
-sol	= [X_est_sN(:, 2:end); S_ssN(1:m, 1:end - 1)] / X_est_sN(:,1:end - 1);
+sol	= [X_est_sN(:, 2:end); Y_ssN(1:m, 1:end - 1)] / X_est_sN(:,1:end - 1);
 As  = sol(1:n, 1:n);
 Cs  = sol(n + 1:end, :);
 
 % Compute residuals
 W = X_est_sN(:,2:end) - As * X_est_sN(:,1:end -1);
-V = S_ssN(1:m,1:end -1 ) - Cs * X_est_sN(:,1:end -1);
+V = Y_ssN(1:m,1:end -1 ) - Cs * X_est_sN(:,1:end -1);
 
 % Compute covariance matrices
 Q_est = 1/N * (W * W');

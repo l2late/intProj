@@ -28,17 +28,17 @@ alpha2 = 0.0075;    % Heat gain 2 (W/%)
 Us = 20.0;          % Heat transfer coefficent
 tau = 10.0;         % Heat conduction time constant
 
-% initial guess vector
+% Initial guess vector
 p0 = [U,alpha1,alpha2,Us,tau];
 
-% upper and lower bounds of p
+% Upper and lower bounds of p
 lb = [1,  0.001, 0.001, 5,  5]; % lower bound
 ub = [20, 0.03,  0.02,  40, 60]; % upper bound
 
-% show initial objective
+% Show initial objective
 disp(['Initial SSE Objective: ' num2str(objective(p0,t,Q1,Q2,T1meas,T2meas))])
 
-% no linear constraints
+% No linear constraints
 A = [];
 b = [];
 Aeq = [];
@@ -57,13 +57,13 @@ problem = createOptimProblem('fmincon','objective',...
     obj,'x0',p0,'Aineq',A,'bineq',b,'Aeq',Aeq,'beq',beq,...
     'lb',lb,'ub',ub,'nonlcon',nlcon,'options',opts);
 
-% run optimization with random starts
+% Run optimization with random starts
 [p,fval] = run(ms,problem,n_multistart);
 
-% show final objective
+% Show final objective
 disp(['Final SSE Objective: ' num2str(fval)])
 
-% optimized parameter values
+% Optimized parameter values
 U = p(1);
 alpha1 = p(2);
 alpha2 = p(3);
@@ -76,12 +76,12 @@ fprintf('alpha2:\t%4.4f\n',alpha2)
 fprintf('Us:\t%4.2f\n',Us)
 fprintf('tau:\t%4.2f\n',tau)
 
-% save optimized parameters
+% Save optimized parameters
 FileName = '../model_parameters/model_parameters_luca';
 %FileName = 'model_parameters_halithan';
 save(FileName,'U','Us','alpha1','alpha2','tau','-append');
 
-% calculate model with updated parameters
+% Calculate model with updated parameters
 Ti  = simulate(p0,t,Q1,Q2,T1meas(1),T2meas(1));
 Tp  = simulate(p,t,Q1,Q2,T1meas(1),T2meas(1));
 
@@ -110,7 +110,6 @@ hold on
 plot(t/60.0,Q2,'k--','LineWidth',2)
 ylabel('Heater Output')
 legend('Q_1','Q_2')
-
 xlabel('Time (min)')
 
 % save optimized parameters
