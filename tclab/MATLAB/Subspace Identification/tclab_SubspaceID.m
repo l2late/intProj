@@ -1,4 +1,5 @@
 %% Subspace Identification
+close all;
 
 % load test data
 load ../results/luca/semi_random_test_60min_luca.mat
@@ -33,11 +34,14 @@ sigma_sid   = zeros(1,N_real);
 for ii = 1:N_real
     % in general n < s << N
     s       = 8;
-    n       = 6; % Order of subspace model 
+    n       = 4; % Order of subspace model 
     
     sing_val_plot       = true; % Plot magnitude of singular values
-    [A, C, K]           = SubId(u_id', y_id', s, n, sing_val_plot);
+    [A, B, C, D, K]     = SubId(u_id', y_id', s, n, sing_val_plot);
     %[var_eps, vaf]      = loopSID(G,H,A,C,K,sigmae,data_val);
     %vaf_sid(ii)         = vaf;
     %sigma_sid(ii)       = var_eps;
 end
+
+sys = ss(A,B,C,D);
+pzmap(sys);
