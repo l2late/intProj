@@ -14,12 +14,12 @@ eps     = 0.9;              % Emissivity
 sigma   = 5.67e-8;          % Stefan-Boltzman
 
 % set coefficient of state space matrices
-a11 = -(1/(m*Cp))*(U*A + 4*eps*sigma*A*Tnom^3 + Us*As + 4*eps*sigma*As*Tnom^3);
-a12 = -(1/(m*Cp))*(Us*As + 4*eps*sigma*As*Tnom^3);
+a11 = -(m*Cp)^(-1)*(U*A + 4*eps*sigma*A*Tnom^3 + Us*As + 4*eps*sigma*As*Tnom^3);
+a12 = (m*Cp)^(-1)*(Us*As + 4*eps*sigma*As*Tnom^3);
 a13 = 0;
 a14 = 0;
-a21 = (1/(m*Cp))*(Us*As + 4*eps*sigma*As*Tnom^3);
-a22 = (1/(m*Cp))*(-U*A - 4*eps*sigma*A*Tnom^3 + Us*As + 4*eps*sigma*As*Tnom^3);
+a21 = -(m*Cp)^(-1)*(Us*As + 4*eps*sigma*As*Tnom^3);
+a22 = (m*Cp)^(-1)*(-U*A - 4*eps*sigma*A*Tnom^3 + Us*As + 4*eps*sigma*As*Tnom^3);
 a23 = 0;
 a24 = 0;
 a31 = 1\tau;
@@ -31,10 +31,10 @@ a42 = 1\tau;
 a43 = 0;
 a44 = -1\tau;
 
-b11 = alpha1;
+b11 = (m*Cp)^(-1)*alpha1;
 b12 = 0;
 b21 = 0;
-b22 = alpha2;
+b22 = (m*Cp)^(-1)*alpha2;
 b31 = 0;
 b32 = 0;
 b41 = 0;
