@@ -5,13 +5,6 @@ function sys = stateSpaceModel(Tnom)
 load ../model_parameters/model_parameters_luca;
 %load ../model_parameters/model_parameters_halithan;
 
-% % Values analytically computed
-% U= 1.934;
-% Us = 10.44;
-% alpha1=0.0084224;
-% alpha2=0.009575;
-% tau = 11.167;
-
 % General Model Parameters
 m       = 4.0/1000.0;       % kg
 Cp      = 0.5 * 1000.0;     % J/kg-K    
