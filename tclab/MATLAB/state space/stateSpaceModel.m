@@ -1,7 +1,7 @@
 function sys = stateSpaceModel(Tnom)
 % Returns a state space model for the 2nd order physics model
  
-% get optimized parameters from file
+% Get optimized parameters from file
 load ../model_parameters/model_parameters_luca;
 %load ../model_parameters/model_parameters_halithan;
 
@@ -13,7 +13,7 @@ As      = 2.0 / 100.0^2;    % Area in m^2
 eps     = 0.9;              % Emissivity
 sigma   = 5.67e-8;          % Stefan-Boltzman
 
-% set coefficient of state space matrices
+% Set coefficient of state space matrices
 a11 = -(m*Cp)^(-1)*(U*A + 4*eps*sigma*A*Tnom^3 + Us*As + 4*eps*sigma*As*Tnom^3);
 a12 = (m*Cp)^(-1)*(Us*As + 4*eps*sigma*As*Tnom^3);
 a13 = 0;

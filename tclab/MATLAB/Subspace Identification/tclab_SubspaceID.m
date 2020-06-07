@@ -1,5 +1,5 @@
 %% Subspace Identification
-close all;
+clear all; close all; clc;
 
 % load test data
 load ../results/luca/semi_random_test_60min_luca.mat
@@ -37,11 +37,18 @@ for ii = 1:N_real
     n       = 4; % Order of subspace model 
     
     sing_val_plot       = true; % Plot magnitude of singular values
-    [A, B, C, D, K]     = SubId(u_id', y_id', s, n, sing_val_plot);
+    [A, B, C, D, K]     = SubId(u_id', y_id', s, n, sing_val_plot)
     %[var_eps, vaf]      = loopSID(G,H,A,C,K,sigmae,data_val);
     %vaf_sid(ii)         = vaf;
     %sigma_sid(ii)       = var_eps;
 end
 
-sys = ss(A,B,C,D);
-pzmap(sys);
+sidsys = ss(A,B,C,D);
+pole(sidsys)
+pzmap(sidsys);
+assert(all(real(pole(sidsys))<=0))
+
+% save identified system
+FileName = '../model_parameters/sid_parameters_luca';
+%FileName = '../model_parameters/ss_parameters_halithan';
+save(FileName,'sidsys','-append');
