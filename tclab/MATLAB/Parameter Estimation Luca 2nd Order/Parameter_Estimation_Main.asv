@@ -52,7 +52,7 @@ obj = @(x)objective(x,t,Q1,Q2,T1meas,T2meas);
 % start pool of parallel workers
 %parpool('local')
 % Define MultiStart problem with parallel execution
-ms = MultiStart('UseParallel',true);     
+ms = MultiStart('UseParallel',true);
 opts = optimoptions(@fmincon,'Algorithm','interior-point','Display','iter');
 problem = createOptimProblem('fmincon','objective',...
     obj,'x0',p0,'Aineq',A,'bineq',b,'Aeq',Aeq,'beq',beq,...
@@ -114,6 +114,6 @@ legend('Q_1','Q_2')
 xlabel('Time (min)')
 
 % save optimized parameters
-% FileName = '../model_parameters/model_parameters_luca';
-FileName = '../model_parameters/model_parameters_halithan';
+FileName = '../model_parameters/model_parameters_luca';
+%FileName = '../model_parameters/model_parameters_halithan';
 save(FileName,'U','Us','alpha1','alpha2','tau','-append');
