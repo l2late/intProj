@@ -3,7 +3,7 @@
 
 close all; clear all; clc
 
-n_multistart = 50;
+n_multistart = 20;
 
 % generate data file from TCLab or get sample data file from:
 % https://apmonitor.com/pdc/index.php/Main/ArduinoEstimation2
@@ -50,7 +50,7 @@ nlcon = [];
 obj = @(x)objective(x,t,Q1,Q2,T1meas,T2meas);
 
 % start pool of parallel workers
-%parpool('local')
+parpool('local')
 % Define MultiStart problem with parallel execution
 ms = MultiStart('UseParallel',true);     
 opts = optimoptions(@fmincon,'Algorithm','interior-point','Display','iter');
@@ -76,11 +76,6 @@ fprintf('alpha1:\t%4.4f\n',alpha1)
 fprintf('alpha2:\t%4.4f\n',alpha2)
 fprintf('Us:\t%4.2f\n',Us)
 fprintf('tau:\t%4.2f\n',tau)
-
-% Save optimized parameters
-FileName = '../model_parameters/model_parameters_luca';
-%FileName = 'model_parameters_halithan';
-save(FileName,'U','Us','alpha1','alpha2','tau','-append');
 
 % Calculate model with updated parameters
 Ti  = simulate(p0,t,Q1,Q2,T1meas(1),T2meas(1));
@@ -116,4 +111,4 @@ xlabel('Time (min)')
 % save optimized parameters
 % FileName = '../model_parameters/model_parameters_luca';
 FileName = '../model_parameters/model_parameters_halithan';
-save(FileName,'U','Us','alpha1','alpha2','tau','-append');
+save(FileName,'U','Us','alpha1','alpha2','tau');
