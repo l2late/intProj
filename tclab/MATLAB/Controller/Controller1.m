@@ -31,6 +31,14 @@ EV = eig(A); % all negative so stable
 Co = ctrb(linsys); %check controllability,  > full rank
 Ob = obsv(linsys); %check observability,    > full rank
 
+if rank(Ob) == length(C)
+    fprintf("\n full rank obsv. matrix")
+end
+if rank(Co) == length(B')
+    fprintf("\n full rank cont. matrix")
+end 
+
+
 TF_pole = pole(TF);
 TF_zero = tzero(TF);
 
