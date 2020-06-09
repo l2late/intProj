@@ -7,15 +7,30 @@ cool_temp = 28;
 % include tclab for connection to arduino
 tclab
 
-%% Semi Random Test: heater 1  and heater 2 set to varying values
+%% PRBS Test
 
 % wait for setup to cooldown
 cool_down_check(a,cool_temp);
 
-FileName='semi_random_test_60min_luca';
+FileName='../results/luca/prbs_test_60min_luca';
 
 % get heater settings from file (generated with help_define_heater_input.m)
-load semirandom_heater_input.mat
+load ../data/inputs/prbs_heater_input_60min.mat
+
+Q1 = Q(:,1);
+Q2 = Q(:,2);
+
+run_one_test(a,Q1,Q2,FileName)
+
+%% PRBS Test for validation data
+
+% wait for setup to cooldown
+cool_down_check(a,cool_temp);
+
+FileName='../results/luca/prbs_test_60min_val_luca';
+
+% get heater settings from file (generated with help_define_heater_input.m)
+load ../data/inputs/prbs_heater_input_60min_val.mat
 
 Q1 = Q(:,1);
 Q2 = Q(:,2);
