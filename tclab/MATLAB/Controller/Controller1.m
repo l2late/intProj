@@ -48,7 +48,11 @@ TF_zero = tzero(TF);
 
 %% Pole placement
 % close all
+<<<<<<< HEAD
 P = [-0.05 -0.05 -0.1 -0.2]  ; % desired closed loop EV
+=======
+P= [-0.05 -0.05 -0.01 -0.5]  ; % desired closed loop EV
+>>>>>>> 06c996becdb8086039d01f36f5875f126d216152
 K = place(A,B,P); %Solve for K using pole placement
 
 % check for closed loop EV
@@ -75,11 +79,17 @@ Q = [1 0 0 0;   %penalize x1 error
      0 1 0 0;   %penalize x2 error
      0 0 1 0;   %penalize x3 error
      0 0 0 1];  %penalize x4 error
+<<<<<<< HEAD
 R = [0.01   0;     %penalize actuator effort
+=======
+R = [0.01   0;     %penalize input/actuator effort
+>>>>>>> 06c996becdb8086039d01f36f5875f126d216152
      0      0.01];
 
- 
+
 [K_lqr,S,e] = lqr(linsys,Q,R) ;
+
+
 
 % check for closed loop EV
 A_lqr = A-B*K_lqr;
@@ -87,20 +97,25 @@ E_lqr = eig(A_lqr);
 linsys_lqr = ss(A_lqr, B, C, D);
 
 %plot
-figure("Name","Scaled - LQR control")
+figure("Name","LQR")
+subplot(2,2,1)
+title("LQR control")
 step(linsys_lqr)
 
-X0= [1; 0; 0; 0]; 
+
+X0= [1; 0; 0.5 ; 0.2]; 
 [Y,T,X] = initial (linsys_lqr, X0);
+subplot(2,2,2)
+p1 = plot( T, Y(:,1), 'LineWidth', 1);
+title("Step Response Initial Condiiton");
 
-figure("Name","Response to Initial Condiiton");
-p1 = plot( T, Y(:,1), 'LineWidth', 4);
+subplot(2,2,3)
+p2= plot( T, -K*X', 'LineWidth', 1);
+title("Actuator Effort - LQR control")
 
-figure("Name","Actuator Effor' - LQR control")
-p2= plot( T, -K*X', 'LineWidth', 4);
-
-figure("Name","Pole / Zero - LQR control")
+subplot(2,2,4)
 pzmap(linsys_lqr)
+title("Pole-Zero Map - LQR")
 %% H_infity
 
 
