@@ -9,7 +9,7 @@
 time = 60;              % simulation time in min
 n_samples = time*60;    % simulation time in seconds
 n_inputs = 2;
-band = [0 0.015];
+band = [0 0.01];
 range = [0 100];
 
 Q = idinput([n_samples n_inputs],'prbs', band, range);
@@ -22,4 +22,4 @@ subplot(2,1,2)
 plot(Q(:,2))
 title('Q2')
 
-%save('../data/inputs/prbs_heater_input_60min_val_dummy','Q');
+save('../data/inputs/prbs_heater_input_60min','Q');
