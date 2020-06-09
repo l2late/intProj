@@ -89,20 +89,25 @@ E_lqr = eig(A_lqr);
 linsys_lqr = ss(A_lqr, B, C, D);
 
 %plot
-figure("Name","LQR control")
+figure("Name","LQR")
+subplot(2,2,1)
+title("LQR control")
 step(linsys_lqr)
 
-X0= [1; 0; 0; 0]; 
+
+X0= [1; 0; 0.5 ; 0.2]; 
 [Y,T,X] = initial (linsys_lqr, X0);
+subplot(2,2,2)
+p1 = plot( T, Y(:,1), 'LineWidth', 1);
+title("Step Response Initial Condiiton");
 
-figure("Name","Response to Initial Condiiton");
-p1 = plot( T, Y(:,1), 'LineWidth', 4);
+subplot(2,2,3)
+p2= plot( T, -K*X', 'LineWidth', 1);
+title("Actuator Effort - LQR control")
 
-figure("Name","Actuator Effor' - LQR control")
-p2= plot( T, -K*X', 'LineWidth', 4);
-
-figure("Name","Pole / Zero - LQR control")
+subplot(2,2,4)
 pzmap(linsys_lqr)
+title("Pole-Zero Map - LQR")
 %% H_infity
 
 %% Performance and Robustness
