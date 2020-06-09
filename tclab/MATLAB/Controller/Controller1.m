@@ -48,7 +48,7 @@ TF_zero = tzero(TF);
 
 %% Pole placement
 % close all
-P= [-0.5 -0.5 -5 -10]  ; % desired closed loop EV
+P= [-0.05 -0.05 -0.01 -0.5]  ; % desired closed loop EV
 K = place(A,B,P); %Solve for K using pole placement
 
 % check for closed loop EV
@@ -75,11 +75,13 @@ Q = [1 0 0 0;   %penalize x1 error
      0 1 0 0;   %penalize x2 error
      0 0 1 0;   %penalize x3 error
      0 0 0 1];  %penalize x4 error
-R = [0.01   0;     %penalize actuator effor
+R = [0.01   0;     %penalize input/actuator effort
      0      0.01];
 
- 
+
 [K_lqr,S,e] = lqr(linsys,Q,R) ;
+
+
 
 % check for closed loop EV
 A_lqr = A-B*K_lqr;
@@ -87,7 +89,7 @@ E_lqr = eig(A_lqr);
 linsys_lqr = ss(A_lqr, B, C, D);
 
 %plot
-figure("Name","Scaled - LQR control")
+figure("Name","LQR control")
 step(linsys_lqr)
 
 X0= [1; 0; 0; 0]; 
