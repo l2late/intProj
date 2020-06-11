@@ -1,11 +1,12 @@
 close all; clear all; clc
 
 
-datafiles = dir('../inputs/prbs*.mat');
+%datafiles = dir('../inputs/prbs*.mat');
+datafiles = dir('both*.mat');
 
 nf = length(datafiles);
 
-for ii = 1:2
+for ii = 1:1
     
     load([sprintf('%s',datafiles(ii).folder), filesep, sprintf('%s',datafiles(ii).name)]);
     

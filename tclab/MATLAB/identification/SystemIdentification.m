@@ -1,7 +1,11 @@
 clear all; close all; clc;
 
+focus = 'simulation';
+% focus = 'prediction';
+
 % Get identification data
-[data, datap, datai, Tnom, T0, outputOffset] = get_id_data;
+% [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data;
+[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_id_data;
 
 % Get optimized parameters as initial guesses
 if isunix
@@ -42,7 +46,8 @@ init_sys.Structure.Parameters(5).Maximum = 60;
 
 % Estimate Greybox model with 1 tau
 
-opt = greyestOptions('SearchMethod','fmincon','InitialState','zero');
+opt = greyestOptions('SearchMethod','fmincon','InitialState','zero',...
+    'Focus',focus);
 greysys_1tau = greyest(datap,init_sys,opt);
 
 % clear old variables
@@ -58,7 +63,6 @@ else
 end
 
 % Initialize greybox model with 2 tau
-
 
 odefun = 'linearTclabModel_2tau';
 fcn_type =  'c';
@@ -89,23 +93,24 @@ init_sys.Structure.Parameters(6).Maximum = 60;
 
 % Estimate Greybox model with 2 tau
 
-opt = greyestOptions('SearchMethod','fmincon','InitialState','zero');
+opt = greyestOptions('SearchMethod','fmincon','InitialState','zero',...
+    'Focus',focus);
 greysys_2tau = greyest(datap,init_sys,opt);
 
 %% Blackbox model estimation
 
 % Identify system and print report
 opt = ssestOptions('InitializeMethod','n4sid','InitialState','zero',...
-    'EnforceStability',true);
+    'EnforceStability',true,'Focus',focus);
 blacksys = ssest(datap,4,opt);
 blacksys.Report
 
-[A,B,C,D,K] = idssdata(blacksys)
+[A,B,C,D,K] = idssdata(blacksys);
 
 %% Plot validation results and save images
 
 % Get validation data
-[data, datap, datai, Tnom, T0, outputOffset] = get_val_data;
+[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_val_data;
 
 opt = compareOptions('InitialCondition','z','OutputOffset',outputOffset');
 

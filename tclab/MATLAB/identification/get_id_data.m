@@ -1,11 +1,11 @@
-function [data, datap, datai, Tnom, T0, outputOffset] = get_id_data
+function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data
 
 % load test data depending on OS
 
 if isunix
-    load ../data/luca/prbs_test_60min.mat
+    load ../data/luca/prbs_test_60min.mat;
 elseif ispc
-    load ../data/halithan/prbs_test_60_min.mat
+    load ../data/halithan/prbs_test_60_min.mat;
 else
     disp('Platform not supported')
 end
@@ -41,6 +41,10 @@ datap.OutputData = idfilt(datap.OutputData,filter);
 datai = datap;
 datai.OutputData = datai.OutputData + outputOffset;
 
-% ADD RESAMPLED DATASET
+% RESAMPLED DATASET
+%datar  = datap
+datar  = resample(datap,1,15);
+datari = datar;
+datari.OutputData = datari.OutputData + outputOffset;
 
 end
