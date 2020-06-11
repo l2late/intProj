@@ -1,11 +1,11 @@
-function [data, datap, datai, Tnom, T0, outputOffset] = get_id_data
+function [data, datap, datai, Tnom, T0, outputOffset] = get_val_data
 
 % load test data depending on OS
 
 if isunix
-    load ../data/luca/prbs_test_60min.mat
+    load ../data/luca/prbs_test_60min_val.mat
 elseif ispc
-    load ../data/halithan/prbs_test_60_min.mat
+    load ../data/halithan/prbs_test_60_min_val.mat
 else
     disp('Platform not supported')
 end
