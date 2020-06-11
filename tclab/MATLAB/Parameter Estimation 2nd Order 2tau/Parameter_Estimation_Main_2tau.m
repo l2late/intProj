@@ -3,14 +3,13 @@
 
 close all; clear all; clc
 
-n_multistart = 50;
+n_multistart = 20;
 
 % generate data file from TCLab or get sample data file from:
 % https://apmonitor.com/pdc/index.php/Main/ArduinoEstimation2
 % Import data file
-%load ../results/luca/semi_random_test.mat
-% load ../results/luca/semi_random_test_60min_luca.mat
-load ../results/halithan/semi_random_test_60min_halithan.mat
+%load ../data/luca/prbs_test_60min.mat
+%load ../data/halithan/prbs_test_60min.mat
 
 % Extract data columns
 t = data(:,1);
@@ -27,14 +26,16 @@ U = 10.0;           % Heat transfer coefficient (W/m^2-K)
 alpha1 = 0.0100;    % Heat gain 1 (W/%)
 alpha2 = 0.0075;    % Heat gain 2 (W/%)
 Us = 20.0;          % Heat transfer coefficent
-tau = 10.0;         % Heat conduction time constant
+tau1 = 10.0;         % Heat conduction time constant for heater 1
+tau2 = 10.0;         % Heat conduction time constant for heater 2
+
 
 % Initial guess vector
-p0 = [U,alpha1,alpha2,Us,tau];
+p0 = [U,alpha1,alpha2,Us,tau1,tau2];
 
 % Upper and lower bounds of p
-lb = [1,  0.001, 0.001, 5,  5]; % lower bound
-ub = [20, 0.03,  0.02,  40, 60]; % upper bound
+lb = [1,  0.001, 0.001, 5,  3, 3]; % lower bound
+ub = [20, 0.03,  0.03,  40, 60, 60]; % upper bound
 
 % Show initial objective
 disp(['Initial SSE Objective: ' num2str(objective(p0,t,Q1,Q2,T1meas,T2meas))])
@@ -50,9 +51,9 @@ nlcon = [];
 obj = @(x)objective(x,t,Q1,Q2,T1meas,T2meas);
 
 % start pool of parallel workers
-%parpool('local')
+parpool('local')
 % Define MultiStart problem with parallel execution
-ms = MultiStart('UseParallel',true);
+ms = MultiStart('UseParallel',true);     
 opts = optimoptions(@fmincon,'Algorithm','interior-point','Display','iter');
 problem = createOptimProblem('fmincon','objective',...
     obj,'x0',p0,'Aineq',A,'bineq',b,'Aeq',Aeq,'beq',beq,...
@@ -69,18 +70,15 @@ U = p(1);
 alpha1 = p(2);
 alpha2 = p(3);
 Us = p(4);
-tau = p(5);
+tau1 = p(5);
+tau2 = p(6);
 
 fprintf('U:\t%4.2f\n',U)
 fprintf('alpha1:\t%4.4f\n',alpha1)
 fprintf('alpha2:\t%4.4f\n',alpha2)
 fprintf('Us:\t%4.2f\n',Us)
-fprintf('tau:\t%4.2f\n',tau)
-
-% Save optimized parameters
-FileName = '../model_parameters/model_parameters_luca';
-%FileName = 'model_parameters_halithan';
-save(FileName,'U','Us','alpha1','alpha2','tau','-append');
+fprintf('tau1:\t%4.2f\n',tau1)
+fprintf('tau2:\t%4.2f\n',tau2)
 
 % Calculate model with updated parameters
 Ti  = simulate(p0,t,Q1,Q2,T1meas(1),T2meas(1));
@@ -114,6 +112,6 @@ legend('Q_1','Q_2')
 xlabel('Time (min)')
 
 % save optimized parameters
-FileName = '../model_parameters/model_parameters_luca';
-%FileName = '../model_parameters/model_parameters_halithan';
-save(FileName,'U','Us','alpha1','alpha2','tau','-append');
+FileName = '../model_parameters/model_parameters_luca_2tau';
+%FileName = '../model_parameters/model_parameters_halithan_2tau';
+save(FileName,'U','Us','alpha1','alpha2','tau1','tau2');
