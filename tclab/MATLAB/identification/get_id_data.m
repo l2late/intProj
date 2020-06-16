@@ -1,13 +1,12 @@
-function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data
+function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data(who)
 
-% load test data depending on OS
-
-if isunix
+% load test data
+if who == 1
     load ../data/luca/prbs_test_60min.mat;
-elseif ispc
-    load ../data/halithan/prbs_test_60_min.mat;
+elseif who == 2
+    load ../data/halithan/prbs_test_60min.mat;
 else
-    disp('Platform not supported')
+    disp('Value not supported')
 end
 
 % Extract data columns

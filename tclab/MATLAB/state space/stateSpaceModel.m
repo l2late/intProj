@@ -1,9 +1,12 @@
-function sys = stateSpaceModel(Tnom)
+function sys = stateSpaceModel(Tnom, who)
 % Returns a state space model for the 2nd order physics model
  
 % get optimized parameters from file
-load ../model_parameters/model_parameters_luca;
-%load ../model_parameters/model_parameters_halithan;
+if who == 1
+    load ../model_parameters/model_parameters_luca;
+elseif who == 2
+    load ../model_parameters/model_parameters_halithan;
+end
 
 % % Values analytically computed
 % U= 1.934;
