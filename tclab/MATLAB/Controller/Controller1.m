@@ -2,8 +2,8 @@
 clear all; close all; clc;
 
 % load test data
-load ../results/luca/semi_random_test_60min_luca.mat
-%load ../results/halithan/semi_random_test_60min_halithan.mat
+load ../old/results/luca/semi_random_test_60min_luca.mat
+%load ../old/results/halithan/semi_random_test_60min_halithan.mat
 
 % Extract data columns
 t       = data(:,1);
@@ -48,11 +48,7 @@ TF_zero = tzero(TF);
 
 %% Pole placement
 % close all
-<<<<<<< HEAD
-P = [-0.05 -0.05 -0.1 -0.2]  ; % desired closed loop EV
-=======
-P= [-0.05 -0.05 -0.01 -0.5]  ; % desired closed loop EV
->>>>>>> 06c996becdb8086039d01f36f5875f126d216152
+P = [-0.005 -0.005 -0.01 -0.02]  ; % desired closed loop EV
 K = place(A,B,P); %Solve for K using pole placement
 
 % check for closed loop EV
@@ -79,11 +75,7 @@ Q = [1 0 0 0;   %penalize x1 error
      0 1 0 0;   %penalize x2 error
      0 0 1 0;   %penalize x3 error
      0 0 0 1];  %penalize x4 error
-<<<<<<< HEAD
-R = [0.01   0;     %penalize actuator effort
-=======
 R = [0.01   0;     %penalize input/actuator effort
->>>>>>> 06c996becdb8086039d01f36f5875f126d216152
      0      0.01];
 
 
@@ -116,9 +108,4 @@ title("Actuator Effort - LQR control")
 subplot(2,2,4)
 pzmap(linsys_lqr)
 title("Pole-Zero Map - LQR")
-%% H_infity
 
-
-
-%% Performance and Robustness
-%## add error and Later check NP,NS, RP, RS
