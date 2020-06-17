@@ -1,8 +1,8 @@
 clear all; close all; clc;
 
 
-focus = 'simulation';
-% focus = 'prediction';
+%focus = 'simulation';
+focus = 'prediction';
 
 % iterate for both casas: luca and halithan
 for who = 1:2
@@ -148,10 +148,19 @@ figure
 iopzmap(greysys_1tau)
 saveas(gca,[plotPath, 'polezero_greybox_1tau.png'])
 
+%  Plot residuals
+opt=residOptions('InitialCondition','z','OutputOffset',outputOffset');
+figure
+resid(datai,greysys_1tau,opt)
+saveas(gca,[plotPath, 'residuals_greybox_1tau.png'])
+
+% compare bode plots
 figure
 bodemag(greysys_1tau,greysys_2tau,blacksys)
 legend('Greybox Model 1','Greybox Model 2','Blackbox Model','Location','SW')
 saveas(gca,[plotPath, 'bodemag_comparison.png'])
+
+
 
 % Greybox model 2 tau
 [y_grey2,gr_fit2,gr_x02] = compare(datai,greysys_2tau,opt);
@@ -164,6 +173,12 @@ saveas(gca,[plotPath, 'comparison_prepross_greybox_2tau.png'])
 figure
 iopzmap(greysys_2tau)
 saveas(gca,[plotPath, 'polezero_greybox_2tau.png'])
+
+%  Plot residuals
+opt=residOptions('InitialCondition','z','OutputOffset',outputOffset');
+figure
+resid(datai,greysys_2tau,opt)
+saveas(gca,[plotPath, 'residuals_greybox_2tau.png'])
 
 % Blackbox Model
 figure
@@ -179,9 +194,9 @@ iopzmap(blacksys)
 saveas(gca,[plotPath, 'polezero_blackbox.png'])
 
 %  Plot residuals
-opt=residOptions('MaxLag',30);
+opt=residOptions('InitialCondition','z','OutputOffset',outputOffset');
 figure
-resid(datap,blacksys,opt)
+resid(datai,blacksys,opt)
 saveas(gca,[plotPath, 'residuals_blackbox.png'])
 
 %% Variance accounted for

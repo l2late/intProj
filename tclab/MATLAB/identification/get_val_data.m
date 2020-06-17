@@ -4,7 +4,7 @@ function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_d
 if who == 1
     load ../data/luca/prbs_test_60min_val.mat;
 elseif who == 2
-    load ../data/halithan/prbs_test_60_min_val.mat;
+    load ../data/halithan/prbs_test_60min_val.mat;
 else
     disp('Value not supported')
 end

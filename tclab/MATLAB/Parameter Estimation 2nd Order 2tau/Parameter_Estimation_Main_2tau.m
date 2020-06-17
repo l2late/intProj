@@ -3,9 +3,9 @@
 
 close all; clear all; clc
 
-n_multistart = 1;
+n_multistart = 20;
 % start pool of parallel workers
-% parpool('local')
+%parpool('local')
 
 % generate data file from TCLab or get sample data file from:
 % https://apmonitor.com/pdc/index.php/Main/ArduinoEstimation2
@@ -66,7 +66,7 @@ for who = 1:2
     % Define MultiStart problem with parallel execution
     ms = MultiStart('UseParallel',true);     
     opts = optimoptions(@fmincon,'Algorithm','interior-point',...
-        'Display','iter','MaxIterations',3);
+        'Display','iter');
     problem = createOptimProblem('fmincon','objective',...
         obj,'x0',p0,'Aineq',A,'bineq',b,'Aeq',Aeq,'beq',beq,...
         'lb',lb,'ub',ub,'nonlcon',nlcon,'options',opts);
