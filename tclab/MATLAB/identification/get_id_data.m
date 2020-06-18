@@ -1,4 +1,4 @@
-function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data(who)
+function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data(who,resampleFactor)
 
 % load test data
 if who == 1

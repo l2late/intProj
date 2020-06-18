@@ -3,6 +3,8 @@ clear all; close all; clc;
 
 %focus = 'simulation';
 focus = 'prediction';
+resampleFactor = 1;
+
 
 % iterate for both casas: luca and halithan
 for who = 1:2
@@ -12,9 +14,9 @@ for who = 1:2
 % [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data(who);
 
 % with resample
-[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_id_data(who);
+%[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_id_data(who,resampleFactor);
 % no resample
-%[~, datap, datai, ~, ~, Tnom, T0, outputOffset] = get_id_data(who);
+[~, datap, datai, ~, ~, Tnom, T0, outputOffset] = get_id_data(who,resampleFactor);
 
 % Get optimized parameters as initial guesses
 if who == 1
@@ -118,12 +120,12 @@ blacksys = ssest(datap,4,opt);
 %% Plot validation results and save images
 
 % Get validation data
-%[data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_data(who);
+%[data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_data(who,resampleFactor);
 
 % With resample
-[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_val_data(who);
+%[~, ~, ~, datap, datai, Tnom, T0, outputOffset] = get_val_data(who,resampleFactor);
 % Without resample
-%[~, datap, datai, ~, ~, Tnom, T0, outputOffset] = get_val_data(who);
+[~, datap, datai, ~, ~, Tnom, T0, outputOffset] = get_val_data(who,resampleFactor);
 
 % Set path for plots
 if who == 1

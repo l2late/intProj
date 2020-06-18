@@ -1,4 +1,4 @@
-function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_data(who)
+function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_data(who,resampleFactor)
 
 % load test data
 if who == 1
@@ -43,7 +43,7 @@ datai.OutputData = datai.OutputData + outputOffset;
 
 % RESAMPLED DATASET
 %datar  = datap;
-datar  = resample(datap,1,15);
+datar  = resample(datap,1,resampleFactor);
 datari = datar;
 datari.OutputData = datari.OutputData + outputOffset;
 end
