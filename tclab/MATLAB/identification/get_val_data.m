@@ -1,6 +1,8 @@
 function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_val_data(who,resampleFactor)
 
 % load test data
+loadName = ['../data/',who{1},'2tau'];
+load(loadName)
 if who == 1
     load ../data/luca/prbs_test_60min_val.mat;
 elseif who == 2

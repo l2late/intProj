@@ -1,12 +1,13 @@
-function [data, datap, datai, datar, datari, Tnom, T0, outputOffset] = get_id_data(who,resampleFactor)
+function [data, datap, datai, Tnom, T0, outputOffset] = get_data(who,resampleFactor,type)
+
 
 % load test data
-if who == 1
-    load ../data/luca/prbs_test_60min.mat;
-elseif who == 2
-    load ../data/halithan/prbs_test_60min.mat;
-else
-    disp('Value not supported')
+if strcmp(type,'id')
+    loadName = ['../data/',who,'/prbs_test_60min.mat'];
+    load(loadName);
+elseif strcmp(type,'val')
+    loadName = ['../data/',who,'/prbs_test_60min_val.mat'];
+    load(loadName);
 end
 
 % Extract data columns
@@ -40,10 +41,12 @@ datap.OutputData = idfilt(datap.OutputData,filter);
 datai = datap;
 datai.OutputData = datai.OutputData + outputOffset;
 
-% RESAMPLED DATASET
-%datar  = datap
-datar  = resample(datap,1,15);
-datari = datar;
-datari.OutputData = datari.OutputData + outputOffset;
+% Resampled dataset: 
+% only if factor is not 1 and if type is 'id'
+if (resampleFactor ~= 1) || strcmp(type,'id')% && (resampleFactor ~= 1)
+    datap = resample(datap,1,resampleFactor);
+    datai = datap;
+    datai.OutputData = datai.OutputData + outputOffset;
+end
 
 end
