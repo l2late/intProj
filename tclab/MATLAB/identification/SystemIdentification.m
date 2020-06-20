@@ -1,6 +1,8 @@
 clear all; clc;
 
-rs_list = [1,5];%,10,15,20,25,30,35,40];
+% list of resampling factors
+%rs_list = [1,5,10,15,20,25,30,35,40];
+rs_list = 5;
 modelNames = {'greybox 1','greybox 2','blackbox'};
 LW = 1; %line width for bw plots
 
@@ -147,9 +149,10 @@ for who = {'luca','halithan'}
 
             %  Plot residuals
             opt=residOptions('InitialCondition','z',...
-                'OutputOffset',outputOffset');
+                'OutputOffset',outputOffset',...
+                'MaxLag',500);
             figure('visible','off');
-            resid(datai_val,models{ll},opt)
+            resid(datai_val,models{ll},opt,'.b');
             saveas(gca,[plotPath, 'residuals_',modelNames{ll},'.png'])
             
             % Variance accounted for
@@ -157,13 +160,13 @@ for who = {'luca','halithan'}
             
             %% Save all models
 
-%             % Set path for models
-%               modelPath =  ['../id_results/',who{1},'/',...
-%                   num2str(focus{1}),'/',num2str(resampleFactor),'/'];       
-%             if ~exist(modelPath, 'dir')
-%                 mkdir(modelPath)
-%             end
-%             save([modelPath,'models'],'models');
+            % Set path for models
+              modelPath =  ['../id_results/',who{1},'/',...
+                  num2str(focus{1}),'/',num2str(resampleFactor),'/'];       
+            if ~exist(modelPath, 'dir')
+                mkdir(modelPath)
+            end
+            save([modelPath,'models'],'models');
             
         end
         
@@ -209,20 +212,19 @@ for who = {'luca','halithan'}
         end
         
         % constructs table with fit and vaf results
-        varNames = {'Fit T1 & T2 (%)'; 'VAF'};
+        varNames = {'RS';'Fit T1';'Fit T2';'VAF'};
         description = ['Validation performance comparison with ',...
             focus{1},'optimisation focus for varying resampling factors'];
         
         for kk = 1:3
-            n_decimal = 1; % for rounding
-            tab{kk} = table(round(model_fit(:,:,kk), n_decimal),... 
-                round(vaf(kk,:), n_decimal)',...
-                 'VariableNames',varNames,...
-                 'RowNames',string(rs_list)');
+            n_decimal = 2; % for rounding
+            tab{kk} = table(rs_list',model_fit(:,1,kk),model_fit(:,2,kk),...
+                vaf(kk,:)');
             tab{kk}.Properties.Description = description;
             % set desired precision in terms of the number of decimal places
-%             tab{kk} = varfun(@(x) num2str(x, ...
-%                 ['%' sprintf('.%df', n_decimal)]), round(tab{kk}));
+            tab{kk} = varfun(@(x) num2str(x,...
+                ['%' sprintf('.%df', n_decimal)]), tab{kk});
+            tab{kk}.Properties.VariableNames = varNames;
         end
         
         % save table with fit and vaf results
