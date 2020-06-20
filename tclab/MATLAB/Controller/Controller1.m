@@ -1,10 +1,13 @@
 %% Simulate State Space
 clear all; close all; clc;
 
-% load test data
-load ../old/results/luca/semi_random_test_60min_luca.mat
-%load ../old/results/halithan/semi_random_test_60min_halithan.mat
+cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller')
 
+% load test data
+% load ../data/luca/prbs_test_60min.mat
+load ../data/halithan/prbs_test_60min.mat
+%%
+data=prbs_test_60min{1};
 % Extract data columns
 t       = data(:,1);
 Q1      = data(:,2);
@@ -21,8 +24,7 @@ linsys = stateSpaceModel(Tnom);
 A= linsys.A; B= linsys.B; C= linsys.C; D= linsys.D; %SS converting
 TF=  tf(linsys);
 
-figure("Name","stepfunction openloop")
-step(linsys)
+
 
 %% check State Space
 
@@ -38,10 +40,14 @@ if rank(Co) == length(B')
     fprintf("\n full rank cont. matrix")
 end 
 
-TF_pole = pole(TF);
-TF_zero = tzero(TF);
+TF_pole = pole(TF)
+TF_zero = tzero(TF)
 
-% #### do this later if wanted
+%% Openloop plot
+
+% figure("Name","stepfunction openloop")
+% step(linsys)
+
 
 %% Pole placement
 % close all
