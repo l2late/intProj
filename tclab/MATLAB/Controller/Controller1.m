@@ -38,12 +38,9 @@ if rank(Co) == length(B')
     fprintf("\n full rank cont. matrix")
 end 
 
-
 TF_pole = pole(TF);
 TF_zero = tzero(TF);
 
-% To find the MIMO zeros we fill in different zeros for s (a in this case),
-% If the rank drops, it is a MIMO zero
 % #### do this later if wanted
 
 %% Pole placement
@@ -102,10 +99,14 @@ p1 = plot( T, Y(:,1), 'LineWidth', 1);
 title("Step Response Initial Condiiton");
 
 subplot(2,2,3)
-p2= plot( T, -K*X', 'LineWidth', 1);
+p2= plot( T, -K_lqr*X', 'LineWidth', 1);
 title("Actuator Effort - LQR control")
 
 subplot(2,2,4)
 pzmap(linsys_lqr)
 title("Pole-Zero Map - LQR")
 
+%% Check robust stability
+
+% opt = robOptions('Display','on','Sensitivity','on');
+% [StabilityMargin,wcu] =robstab(linsys_lqr,opt);

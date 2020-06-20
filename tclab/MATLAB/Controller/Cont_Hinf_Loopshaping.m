@@ -3,7 +3,7 @@ clear all; close all; clc;
 
 % load test data
 load ../old/results/luca/semi_random_test_60min_luca.mat
-%load ../old/results/halithan/semi_random_test_60min_halithan.mat
+% load ../old/results/halithan/semi_random_test_60min_halithan.mat
 
 % Extract data columns
 t       = data(:,1);
@@ -45,26 +45,62 @@ TF_zero = tzero(TF);
 % To find the MIMO zeros we fill in different zeros for s (a in this case),
 % If the rank drops, it is a MIMO zero
 % #### do this later if wanted
+figure("Name","Margin off each system")
+subplot(2,2,1)
+margin(TF(1,1))
+subplot(2,2,2)
+margin(TF(2,1))
+subplot(2,2,3)
+margin(TF(1,2))
+subplot(2,2,4)
+margin(TF(2,2))
+
+
+figure("Name","Nyquist")
+nyquist(TF)
+[DMI,MMI]=diskmargin(TF)
+
+
+%display(DMI(1))
+%display(DMI(2))
+%display(MMI)
+
+
+%% Check robust stability
+
+% opt = robOptions('Display','on','Sensitivity','on');
+% [StabilityMargin,wcu] =robstab(linsys,opt)
 
 %% H_infity
+
 % get(linsys)
-
-
 s = zpk('s'); % Laplace variable s
 Gd = 8/s; % desired loop shape
+
 % Compute the optimal loop shaping controller K
 [K,CL,GAM] = loopsyn(linsys,Gd);
+
 % Compute the loop L, sensitivity S and complementary sensitivity T:
 L = linsys*K;
 I = eye(size(L));
 S = feedback(I,L); % S=inv(I+L);
 T = I-S;
+
 % Plot the results:
 % step response plots
 Timefinal= 1
 step(T,Timefinal);title('\alpha and \theta command step responses');
 
+
+%% Check robust stability
+
+% opt = robOptions('Display','on','Sensitivity','on');
+% [StabilityMargin,wcu] =robstab(CL,opt);
+% 
+% Gclw = usubs(Gcl, wcu);
+
 %% frequency response plots
+
 figure;
 sigma(L,'r--',Gd,'k-.',Gd/GAM,'k:',Gd*GAM,'k:',{.1,100})
 legend('\sigma(L) loopshape',...
