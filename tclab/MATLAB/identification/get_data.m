@@ -42,8 +42,8 @@ datai = datap;
 datai.OutputData = datai.OutputData + outputOffset;
 
 % Resampled dataset: 
-% only if factor is not 1 and if type is 'id'
-if (resampleFactor ~= 1) || strcmp(type,'id')% && (resampleFactor ~= 1)
+% only if factor is not 1 and if type is not 'val'
+if (resampleFactor ~= 1) || not(strcmp(type,'val'))
     datap = resample(datap,1,resampleFactor);
     datai = datap;
     datai.OutputData = datai.OutputData + outputOffset;

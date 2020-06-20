@@ -1,7 +1,8 @@
 clear all; clc;
 
 rs_list = [1,5];%,10,15,20,25,30,35,40];
-modelNames = {'Greybox 1','Greybox 2','Blackbox'};
+modelNames = {'greybox 1','greybox 2','blackbox'};
+LW = 1; %line width for bw plots
 
 % iterate for both casas: luca and halithan
 for who = {'luca','halithan'}
@@ -29,8 +30,10 @@ for who = {'luca','halithan'}
         fcn_type =  'c';
         parameters = {'heatCoef1',U;'heatCoef2',Us;'alpha1',alpha1;....
             'alpha2',alpha2;'timeConstant',tau;};
-        init_sys = idgrey(odefun,parameters,fcn_type,'InputName',...
-            {'Heater 1','Heater 2'}, 'OutputName',{'Temp 1','Temp 2'});
+        init_sys = idgrey(odefun,parameters,fcn_type,...
+            'Name',modelNames{1},...
+            'InputName',{'Heater 1','Heater 2'},...
+            'OutputName',{'Temp 1','Temp 2'});
 
         % Define parameter bounds for greybox model
         % U
@@ -70,8 +73,10 @@ for who = {'luca','halithan'}
         fcn_type =  'c';
         parameters = {'heatCoef1',U;'heatCoef2',Us;'alpha1',alpha1;....
             'alpha2',alpha2;'timeConstant1',tau1;'timeConstant2',tau2};
-        init_sys = idgrey(odefun,parameters,fcn_type,'InputName',...
-            {'Heater 1','Heater 2'},'OutputName',{'Temp 1','Temp 2'});
+        init_sys = idgrey(odefun,parameters,fcn_type,...
+            'Name',modelNames{1},...
+            'InputName',{'Heater 1','Heater 2'},...
+            'OutputName',{'Temp 1','Temp 2'});
 
         % Define parameter bounds for greybox model
         % U
@@ -105,13 +110,17 @@ for who = {'luca','halithan'}
         opt = ssestOptions('InitializeMethod','n4sid',...
             'InitialState','zero','EnforceStability',true,'Focus',focus{1});
         models{3} = ssest(datap_id,bl_sys_order,opt);
-
+        models{3}.Name = modelNames{3};
+        
         %% Plot validation results and save images
 
         % Get validation data
-        [~, datap_val, datai_val, Tnom, T0, outputOffset] = get_data(who{1},1,'val');
+        [~, datap_val, datai_val, Tnom, T0, outputOffset] = ...
+            get_data(who{1},1,'val');
 
-        plotPath = ['../id_results/',who{1},'/',num2str(resampleFactor),'/'];
+        plotPath = ['../id_results/',who{1},'/',...
+            num2str(focus{1}),'/',num2str(resampleFactor),'/'];
+        
         if ~exist(plotPath, 'dir')
             mkdir(plotPath)
         end
@@ -122,14 +131,15 @@ for who = {'luca','halithan'}
             opt = compareOptions('InitialCondition','z',...
                 'OutputOffset',outputOffset');
             
+            % Time domain comparison
             figure('visible','off');
-            compare(datai_val,models{ll},opt);
+            compare(datai_val,models{ll},'k--',opt);
             legend('Location','SE')
-            
+            set(gca,'DefaultLineLineWidth',1)
             saveas(gca,[plotPath, 'comparison_',modelNames{ll},'.png'])
             
             [y_val{ll},model_fit(jj,:,ll)] = compare(datai_val,models{ll},opt);
-
+            
             % Pole-Zero map
             figure('visible','off');
             iopzmap(models{ll})
@@ -147,18 +157,26 @@ for who = {'luca','halithan'}
             
             %% Save all models
 
-            % Set path for models
-              modelPath =  ['../id_results/',who{1},'/',...
-                  num2str(focus{1}),'/',num2str(resampleFactor),'/'];       
-            if ~exist(modelPath, 'dir')
-                mkdir(modelPath)
-            end
-            save([modelPath,'models'],'models');
+%             % Set path for models
+%               modelPath =  ['../id_results/',who{1},'/',...
+%                   num2str(focus{1}),'/',num2str(resampleFactor),'/'];       
+%             if ~exist(modelPath, 'dir')
+%                 mkdir(modelPath)
+%             end
+%             save([modelPath,'models'],'models');
             
         end
-
+        
+        % Bode mag plot
+        figure('visible','off');
+        bodemag(models{1},...
+            models{2},'k--',...
+            models{3},'k:')
+        legend(modelNames{1},modelNames{2},modelNames{3},...
+            'Location','SE')
+        saveas(gca,[plotPath, 'bodemag_comparison.png'])
+        
         % Time domain comparison plots
-
         t = datai_val.SamplingInstants;
 
         figure('visible','off');
@@ -168,7 +186,7 @@ for who = {'luca','halithan'}
         end
         hold off
         ylabel('Temperature (deg C)')
-        legend('Measured',modelNames{1},modelNames{2},modelNames{3}...
+        legend('measured',modelNames{1},modelNames{2},modelNames{3}...
             ,'Location','SE')
         title('Time Domain Reponses Temperature sensor 1')
         saveas(gca,[plotPath,'timedomain_comparison_all_T1.png']);
@@ -181,7 +199,7 @@ for who = {'luca','halithan'}
         end
         hold off
         ylabel('Temperature (deg C)')
-        legend('Measured',modelNames{1},modelNames{2},modelNames{3}...
+        legend('measured',modelNames{1},modelNames{2},modelNames{3}...
             ,'Location','SE')
         title('Time Domain Reponses Temperature sensor 2')
         saveas(gca,[plotPath,'timedomain_comparison_all_T2.png']);
@@ -191,14 +209,20 @@ for who = {'luca','halithan'}
         end
         
         % constructs table with fit and vaf results
-        varNames = {'Fit H1 & H2 (%)'; 'VAF'};
+        varNames = {'Fit T1 & T2 (%)'; 'VAF'};
         description = ['Validation performance comparison with ',...
             focus{1},'optimisation focus for varying resampling factors'];
+        
         for kk = 1:3
-            tab{kk} = table(model_fit(:,:,kk), vaf(kk,:)',...
+            n_decimal = 1; % for rounding
+            tab{kk} = table(round(model_fit(:,:,kk), n_decimal),... 
+                round(vaf(kk,:), n_decimal)',...
                  'VariableNames',varNames,...
                  'RowNames',string(rs_list)');
             tab{kk}.Properties.Description = description;
+            % set desired precision in terms of the number of decimal places
+%             tab{kk} = varfun(@(x) num2str(x, ...
+%                 ['%' sprintf('.%df', n_decimal)]), round(tab{kk}));
         end
         
         % save table with fit and vaf results
