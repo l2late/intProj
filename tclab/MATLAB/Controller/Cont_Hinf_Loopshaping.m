@@ -5,7 +5,8 @@ cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\i
 
 % load test data
 % load ../data/luca/prbs_test_60min.mat
-load ../data/halithan/prbs_test_60min.mat
+% load ../data/halithan/prbs_test_60min.mat
+
 
 %%
 data=prbs_test_60min{1};
@@ -23,11 +24,19 @@ Tnom = mean([T1meas(1),T2meas(1)]) + 273.15;
 linsys = stateSpaceModel(Tnom);
 
 A= linsys.A; B= linsys.B; C= linsys.C; D= linsys.D; %SS converting
+
 TF=  tf(linsys);
 
 
+%%
+load state_space_matrices.mat
+
+linsys= ss(A,B,C,D)
+TF= tf(linsys);
 
 %% check State Space
+
+
 
 EV = eig(A); % all negative so stable
 %MIMO system, so controllability matrix is not enough
