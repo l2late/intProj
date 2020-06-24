@@ -55,8 +55,8 @@ Q_x1 = 1;
 Q_x2 = 1; %https://www.youtube.com/watch?v=wEevt2a4SKI&feature=youtu.be
 Q_x3 = 1; %Q is bigger than R means fast regulation
 Q_x4 = 1;
-Q_int_x5 = 0.01; %0.001 0.001, 0.005 0.005
-Q_int_x6 = 0.01; 
+Q_int_x5 = 0.001; %0.001 0.001, 0.005 0.005
+Q_int_x6 = 0.001; 
 r11= 0.005;
 r22= 0.005;
 N=0; % N matrix could be added but we do see no reason to penalize the
