@@ -149,7 +149,7 @@ T_setpoint2 = zeros(1,time+1);
 T_ambient = 30;
 
 set_T1 =        [T_ambient      40            55                  45          T_ambient];
-set_T1_time =   1.2*floor([1          5       time*0.4           time*0.7    time*0.9]);
+set_T1_time =   1.2*floor([1        time*0.1       time*0.4           time*0.7    time*0.9]);
 
 % adjust level for heater 1
 if size(set_T1) == size(set_T1_time)
