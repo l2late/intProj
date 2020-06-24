@@ -149,7 +149,7 @@ T_setpoint2 = zeros(1,time+1);
 T_ambient = 30;
 
 set_T1 =        [T_ambient      40            55                  45          T_ambient];
-set_T1_time =   floor([1          time*0.1       time*0.4           time*0.7    time*0.9]);
+set_T1_time =   1.2*floor([1          5       time*0.4           time*0.7    time*0.9]);
 
 % adjust level for heater 1
 if size(set_T1) == size(set_T1_time)
@@ -162,7 +162,7 @@ end
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
 set_T2 =        [T_ambient          50            40            55          T_ambient];
-set_T2_time =   floor([1          time*0.2      time*0.5      time*0.7    time*0.9]);
+set_T2_time =   1.2*floor([1          time*0.2      time*0.5      time*0.7    time*0.9]);
 
 % adjust level for heater 2
 if size(set_T2) == size(set_T2_time)
