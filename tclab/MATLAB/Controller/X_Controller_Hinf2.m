@@ -41,49 +41,40 @@ load bb_mat_new.mat
 
 %% LQR control & Kalman filter
 close all
-% L = place(A', C', eig(A)*4)';
-% L = sys.K;
+nx = 4; % number of state
+nu = 2; %number of input
+ny = 2; % number of output
 
-% LQR
-linsys=ss(A,B,C,D);
-A_ = [A zeros(4,2); C zeros(2,2)];
-B_ = [B; zeros(2,2)];
-C_ = [C  zeros(2,2)] ;
+H = ss(A,B,C,D);
+G= tf(H);
 
+%% choosing weights
+cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller\Simulink\Dual_Heater')
 
-Q_x1 = 1;
-Q_x2 = 1; %https://www.youtube.com/watch?v=wEevt2a4SKI&feature=youtu.be
-Q_x3 = 1; %Q is bigger than R means fast regulation
-Q_x4 = 1;
-Q_int_x5 = 0.01; %0.001 0.001, 0.005 0.005
-Q_int_x6 = 0.01; 
-r11= 0.005;
-r22= 0.005;
-N=0; % N matrix could be added but we do see no reason to penalize the
-%cross product between x and u
+%tuning Parameters
+s=tf('s');
 
-Q = diag([Q_x1 Q_x2 Q_x3 Q_x4 Q_int_x5 Q_int_x6]);
-Q2= diag([Q_x1 Q_x2 Q_x3 Q_x4]);
-R = diag([r11 r22]);
+wB = 0.2;         % desired closed-loop bandwidth
+At_11 = 10^-4;       % desired distrubance attenuation inside bandwith
+M_11  = 1.8;         % desired bound on hinfnorm(S)
 
-[K_,S,CL_poles] = lqr(A_, B_, Q, R, 0);
+Wp_11 = (s/M_11+wB)/(s+wB*At_11);      % Tunable/variable weight weight
+Wp_22 = (s/M_11+wB)/(s+wB*At_11);      % Tunable/variable weight weight 
+Ws = [Wp_11 0;0 Wp_22];                        % Sensivity weight -> Wp*S 0.2
+Wu = eye(2); %Control weight -> Wu*K*S 
+Wt = []; %Empty weight
 
-K = K_(:,1:4);
-K_u = K_(:,5:end);
+[A1, B1, C1, D1] = linmod('hinfinity');
 
-% Kalman  Filter
-% Augmente system with disturbances and noise
-Vd = 0.001*eye(4);  %disturbance covariance
-Vn = 0.001*eye(2);        % noise covariance
+P = ss(A1, B1, C1, D1);
 
-%build kalman  filter
-[L,P,E] = lqe(A,Vd, C,Vd,Vn); % Design Kalman filter
-Kf= (lqr(A',C',Vd,Vn))'; % or using LQR
-sysKF =  ss(A-Kf*C, [B Kf], eye(4), 0*[B Kf]);
+[K,CL, GAM] = hinfsyn(P,2,2)
+
+%% test
+step(feedback(G*K, eye(2)));
 
 
 %% Go back to simulink Folder
-cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller\Simulink\Dual_Heater')
 
 
 % YOU CAN NOW RUN THE SIMULINK 
@@ -146,7 +137,7 @@ time = 1800;              % stoppingtime in sec
 H1 = zeros(1,time);    
 T_setpoint2 = zeros(1,time+1);   
 
-T_ambient = 30;
+T_ambient = 25;
 
 set_T1 =        [T_ambient      40            55                  45          T_ambient];
 set_T1_time =   floor([1          time*0.1       time*0.4           time*0.7    time*0.9]);
@@ -161,8 +152,8 @@ end
 % set heating values for heater 2
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
-set_T2 =        [T_ambient          50            40            55          T_ambient];
-set_T2_time =   floor([1          time*0.2      time*0.5      time*0.7    time*0.9]);
+set_T2 =        [T_ambient          40            35            45          T_ambient];
+set_T2_time =   floor([1          time*0.2      time*0.5      time*0.8    time*0.9]);
 
 % adjust level for heater 2
 if size(set_T2) == size(set_T2_time)
