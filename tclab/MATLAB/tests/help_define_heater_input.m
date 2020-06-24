@@ -10,11 +10,9 @@ Q2 = zeros(loops,1);
 % set heating values for heater 1
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
-set_h1 =    [.001    .2      100;
-             .2     .4      40;
-             .4     .6      100;
-             .6     .8      0;
-             .8     1       90];
+set_h1 =    [.001    .4      40;
+             .4     .8      70;
+             .8     1       100];
 
 % adjust level for heater 1
 for ii = 1:size(set_h1,1)

@@ -1,6 +1,6 @@
-for who = {'luca','halithan'}
+for who = {'halithan'}%'luca',
     % iterate over both optimization focus options
-    for focus = {'simulation','prediction'}
+    for focus = {'prediction'}%'simulation',
         tablePath = ['../id_results/',who{1},'/',...
             num2str(focus{1}),'/tables.mat'];
         load(tablePath);

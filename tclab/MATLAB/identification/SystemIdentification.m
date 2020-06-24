@@ -2,14 +2,14 @@ clear all; clc;
 
 % list of resampling factors
 %rs_list = [1,5,10,15,20,25,30,35,40];
-rs_list = 5;
+rs_list = 30;
 modelNames = {'greybox 1','greybox 2','blackbox'};
 LW = 1; %line width for bw plots
 
 % iterate for both casas: luca and halithan
-for who = {'luca','halithan'}
+for who = {'halithan'}%,'luca'}
     % iterate over both optimization focus options
-    for focus = {'simulation','prediction'}
+    for focus = {'prediction'}%,'simulation'}
         jj = 1;
         % Iterate over varying respamling ratios
         for resampleFactor = rs_list
@@ -76,7 +76,7 @@ for who = {'luca','halithan'}
         parameters = {'heatCoef1',U;'heatCoef2',Us;'alpha1',alpha1;....
             'alpha2',alpha2;'timeConstant1',tau1;'timeConstant2',tau2};
         init_sys = idgrey(odefun,parameters,fcn_type,...
-            'Name',modelNames{1},...
+            'Name',modelNames{2},...
             'InputName',{'Heater 1','Heater 2'},...
             'OutputName',{'Temp 1','Temp 2'});
 
@@ -166,17 +166,29 @@ for who = {'luca','halithan'}
             if ~exist(modelPath, 'dir')
                 mkdir(modelPath)
             end
-            save([modelPath,'models'],'models');
+            % fix matlab save bug
+            greybox_model_1 = models{1};
+            greybox_model_2 = models{2};
+            blackbox_model = models{3};
+            save([modelPath,'greybox_model_1'],'greybox_model_1');
+            save([modelPath,'greybox_model_2'],'greybox_model_2');
+            save([modelPath,'blackbox_model'],'blackbox_model');
             
         end
         
         % Bode mag plot
-        figure('visible','off');
-        bodemag(models{1},...
+        opt = bodeoptions;
+        opt.Xlim = [0.001 1];
+        opt.Ylim = [-100 0];
+        opt.PhaseVisible = 'off';
+        figure;
+        bodeplot(models{1},...
             models{2},'k--',...
-            models{3},'k:')
+            models{3},'k:',opt)
+        grid on
+        set(gcf, 'Position',  [100, 100, 1200, 700])
         legend(modelNames{1},modelNames{2},modelNames{3},...
-            'Location','SE')
+         'Location','SE')
         saveas(gca,[plotPath, 'bodemag_comparison.png'])
         
         % Time domain comparison plots
@@ -190,8 +202,10 @@ for who = {'luca','halithan'}
         hold off
         ylabel('Temperature (deg C)')
         legend('measured',modelNames{1},modelNames{2},modelNames{3}...
-            ,'Location','SE')
+            ,'Location','NW')
+        xlim([0 3600])
         title('Time Domain Reponses Temperature sensor 1')
+        set(gcf, 'Position',  [100, 100, 800, 200])
         saveas(gca,[plotPath,'timedomain_comparison_all_T1.png']);
 
 
@@ -203,8 +217,11 @@ for who = {'luca','halithan'}
         hold off
         ylabel('Temperature (deg C)')
         legend('measured',modelNames{1},modelNames{2},modelNames{3}...
-            ,'Location','SE')
+            ,'Location','NW')
+        xlim([0 3600])
         title('Time Domain Reponses Temperature sensor 2')
+        
+        set(gcf, 'Position',  [100, 100, 800, 200])
         saveas(gca,[plotPath,'timedomain_comparison_all_T2.png']);
 
         jj = jj + 1; 

@@ -2,8 +2,10 @@ clear all;  close all; clc
 
 % save files in right folders
 if isunix
-    FileName1='../data/luca/prbs_test_60min';
-    FileName2='../data/luca/prbs_test_60min_val';
+    FileName1='../data/luca/sine_test1_30min';
+    FileName2='../data/luca/sine_test2_30min';
+%     FileName1='../data/luca/prbs_test_60min';
+%     FileName2='../data/luca/prbs_test_60min_val';
 elseif ispc
     FileName1='../data/halithan/prbs_test_60min';
     FileName2='../data/halithan/prbs_test_60min_val'; 
@@ -13,23 +15,24 @@ end
 
 % temperature to which the test setup must cool down before continuing with
 % the next test
-cool_temp = 28;
+cool_temp = 30;
 
 % include tclab for connection to arduino
 tclab
 
 %% PRBS Test
 
-% % wait for setup to cooldown
-% cool_down_check(a,cool_temp);
-% 
-% % get heater settings from file
-% load ../data/inputs/prbs_heater_input_60min.mat
-% 
-% Q1 = Q(:,1);
-% Q2 = Q(:,2);
-% 
-% run_one_test(a,Q1,Q2,FileName1)
+%wait for setup to cooldown
+cool_down_check(a,cool_temp);
+
+%get heater settings from file
+%load ../data/inputs/prbs_heater_input_60min.mat
+load ../data/inputs/sine_heater_input1
+
+Q1 = Q(:,1);
+Q2 = Q(:,2);
+
+run_one_test(a,Q1,Q2,FileName1)
 
 %% PRBS Test for validation data
 
@@ -37,7 +40,8 @@ tclab
 cool_down_check(a,cool_temp);
 
 % get heater settings from file
-load ../data/inputs/prbs_heater_input_60min_val.mat
+%load ../data/inputs/prbs_heater_input_60min_val.mat
+load ../data/inputs/sine_heater_input2
 
 Q1 = Q(:,1);
 Q2 = Q(:,2);
@@ -46,7 +50,7 @@ run_one_test(a,Q1,Q2,FileName2)
 
 % %% Test 1: Only heater 1 set to 80%
 % 
-% % wait for setup to cooldown
+% % % wait for setup to cooldown
 % cool_down_check(a,cool_temp);
 % 
 % FileName='only_heater1_80';
