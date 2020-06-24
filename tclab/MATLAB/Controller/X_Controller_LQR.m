@@ -35,7 +35,8 @@ clear all; close all; clc;
 cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller')
 
 % load test data 
-load state_space_matrices.mat
+% load state_space_matrices.mat
+load bb_mat_new.mat
 
 % load new_bbmodel.mat
 
@@ -50,14 +51,13 @@ A_ = [A zeros(4,2); C zeros(2,2)];
 B_ = [B; zeros(2,2)];
 C_ = [C  zeros(2,2)] ;
 
-nil = 1e-5;
 
 Q_x1 = 1;
 Q_x2 = 1; %https://www.youtube.com/watch?v=wEevt2a4SKI&feature=youtu.be
 Q_x3 = 1; %Q is bigger than R means fast regulation
 Q_x4 = 1;
-Q_int_x5 = 0.01; %0.001 0.001, 0.005 0.005
-Q_int_x6 = 0.01; 
+Q_int_x5 = 0.05; %0.001 0.001, 0.005 0.005
+Q_int_x6 = 0.05; 
 r11= 0.005;
 r22= 0.005;
 N=0; % N matrix could be added but we do see no reason to penalize the
