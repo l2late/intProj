@@ -7,9 +7,15 @@ clear all; close all; clc;
 
 cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller')
 
-% load test data
-% load ../data/luca/prbs_test_60min.mat
-load ../data/halithan/prbs_test_60min.mat
+% load test data 
+
+% load ../data/luca/prbs_test_60min.mat         % old model
+% load ../data/halithan/prbs_test_60min.mat     % old model
+
+% load ../final_models/halithan/models.mat        % new models halithan
+% load ../final_models/luca/models.mat            % new models luca
+
+load state_space_matrices.mat
 %%
 data=prbs_test_60min{1};
 % Extract data columns
