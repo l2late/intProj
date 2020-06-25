@@ -66,6 +66,8 @@ Q = diag([Q_x1 Q_x2 Q_x3 Q_x4 Q_int_x5 Q_int_x6]);
 Q2= diag([Q_x1 Q_x2 Q_x3 Q_x4]);
 R = diag([r11 r22]);
 
+
+
 [K_,S,CL_poles] = lqr(A_, B_, Q, R, 0);
 
 K = K_(:,1:4);

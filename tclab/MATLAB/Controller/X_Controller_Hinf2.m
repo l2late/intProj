@@ -45,39 +45,62 @@ nx = 4; % number of state
 nu = 2; %number of input
 ny = 2; % number of output
 
+beta = ureal('k', 1, 'Range',[-0.1 1]);
+k = ureal('k', 1, 'Range',[-2 2]); % uncertain parameter
+alpha = ureal('alpha', 1, 'Range', [-1E-5 1E-5]);
+Ap = A +A*k
+
+
+Bp = B + B*k
+Cp = C + [eye(2) eye(2)]*k;
+Gp = ss(A,Bp,Cp,0);
+bodemag(Gp)
+
 H = ss(A,B,C,D);
 G= tf(H);
 
 %% choosing weights
 cd ('C:\Users\halit\Desktop\Universiteit\Q4\Integration Project SC\TCLab Files\intProj\tclab\MATLAB\Controller\Simulink\Dual_Heater')
 
+close all
 %tuning Parameters
 s=tf('s');
 
-wB = 0.2;         % desired closed-loop bandwidth
-At_11 = 10^-4;       % desired distrubance attenuation inside bandwith
-M_11  = 1.8;         % desired bound on hinfnorm(S)
+wB = 0.1;         % desired closed-loop bandwidth
+At_11 = 1E9;       % desired distrubance attenuation inside bandwith
+M_11  = 20;         % desired bound on hinfnorm(S)
 
 Wp_11 = (s/M_11+wB)/(s+wB*At_11);      % Tunable/variable weight weight
 Wp_22 = (s/M_11+wB)/(s+wB*At_11);      % Tunable/variable weight weight 
-Ws = [Wp_11 0;0 Wp_22];                        % Sensivity weight -> Wp*S 0.2
+Ws = [Wp_11 0;0 Wp_22];                % Sensivity weight -> Wp*S 0.2
 Wu = eye(2); %Control weight -> Wu*K*S 
 Wt = []; %Empty weight
 
-[A1, B1, C1, D1] = linmod('hinfinity');
+% [A1, B1, C1, D1] = linmod('hinfinity');
+% 
+% P = ss(A1, B1, C1, D1);
+% 
+% [Kinf,CL, GAM] = hinfsyn(P,2,2)
 
-P = ss(A1, B1, C1, D1);
-
-[K,CL, GAM] = hinfsyn(P,2,2)
-
-%% test
-step(feedback(G*K, eye(2)));
-
-
+[Kinf,CL,GAM,INFO] = mixsyn(G,Ws,Wu,Wt);
+step(feedback(G*Kinf, eye(2)));
+% bode(feedback(G*Kinf, eye(2)));
 %% Go back to simulink Folder
+L = G*Kinf;
+I = eye(size(L));
+S = feedback(L,eye(2)); % S=inv(I+L);
+T = I-S;
 
-
+S_Ta_large= svds(T.a)
+S_Sa_large= svds(S.a)
+S_Ta_small = svds(T.a,6,'smallest')
+S_Sa_small = svds(S.a,6,'smallest')
+% 
+% S=  inv(1+G*Kinf)
+% T = S*G*Kinf
 % YOU CAN NOW RUN THE SIMULINK 
+
+
 
 
 
@@ -133,14 +156,14 @@ step(feedback(G*K, eye(2)));
 % 
 %% time sequence
 
-time = 1800;              % stoppingtime in sec
+time = 1400;              % stoppingtime in sec
 H1 = zeros(1,time);    
 T_setpoint2 = zeros(1,time+1);   
 
-T_ambient = 25;
+T_ambient = 30;
 
 set_T1 =        [T_ambient      40            55                  45          T_ambient];
-set_T1_time =   floor([1          time*0.1       time*0.4           time*0.7    time*0.9]);
+set_T1_time =   1.2*floor([1        time*0.1       time*0.4           time*0.7    time*0.9]);
 
 % adjust level for heater 1
 if size(set_T1) == size(set_T1_time)
@@ -152,8 +175,8 @@ end
 % set heating values for heater 2
 % column 1 and 2: interval begin and end as fraction of total time
 % column 3: heater setting for the corresponding interval
-set_T2 =        [T_ambient          40            35            45          T_ambient];
-set_T2_time =   floor([1          time*0.2      time*0.5      time*0.8    time*0.9]);
+set_T2 =        [T_ambient          50            40            55          T_ambient];
+set_T2_time =   1.2*floor([1          time*0.2      time*0.5      time*0.7    time*0.9]);
 
 % adjust level for heater 2
 if size(set_T2) == size(set_T2_time)
@@ -163,4 +186,5 @@ if size(set_T2) == size(set_T2_time)
 end
 
 T_setpoint= [T_setpoint1;T_setpoint2]'
+
 
